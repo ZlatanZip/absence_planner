@@ -1,0 +1,16 @@
+export default {
+  primary: 'rgb(94, 208, 192)',
+  primary_opacity: 'rgba(94, 208, 192,0.8)',
+  accent: 'rgba(255, 193, 7,0.8)',
+  accent_opacity: 'rgba(255, 193, 7,0.8)',
+  whiteish_opacity: 'rgba(255,255,255,0.8)',
+  whiteish_opacity_blur: 'rgba(255,255,255,0.5)',
+  sandish: 'rgb(219, 210, 191)',
+  sandish_opacity: 'rgba(219, 210, 191,0.8)',
+  plumish_opacity: 'rgba(46, 65, 88,0.7)',
+  plumish: 'rgb(46, 65, 88)',
+  plumish_dark: 'rgb(42, 60, 82)',
+  grayish: 'rgba(125, 128, 126,0.8)',
+  redish: 'rgba(179, 37, 89,0.8)',
+  violetish: 'rgba(69,85,117,0.7)',
+};
