@@ -11,7 +11,7 @@ let timer;
 export const authenticate = (userId, token, expiryTime) => {
   return dispatch => {
     dispatch(userActions.fetchLoggedInUserInfo(token));
-    dispatch(setLogoutTimer(expiryTime));
+    //dispatch(setLogoutTimer(expiryTime));
     dispatch({type: AUTHENTICATE, userId: userId, token: token});
   };
 };
@@ -45,13 +45,13 @@ export const signup = (email, password) => {
       authenticate(
         resData.localId,
         resData.idToken,
-        parseInt(resData.expiresIn) * 1000,
+        /*  parseInt(resData.expiresIn) * 1000, */
       ),
     );
     dispatch({type: SIGNUP, token: resData.idToken, userId: resData.localId});
-    const expirationDate = new Date(
+    /* const expirationDate = new Date(
       new Date().getTime() + parseInt(resData.expiresIn) * 1000,
-    );
+    ); */
     saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
 };
@@ -86,24 +86,24 @@ export const login = (email, password) => {
       authenticate(
         resData.userId,
         resData.token,
-        parseInt(resData.expiresIn) * 1000,
+        /* parseInt(resData.expiresIn) * 1000, */
       ),
     );
     dispatch({type: LOGIN, token: resData.token, userId: resData.userId});
-    const expirationDate = new Date(
+    /*  const expirationDate = new Date(
       new Date().getTime() + parseInt(resData.expiresIn) * 1000,
-    );
-    saveDataToStorage(resData.token, resData.userId, expirationDate);
+    ); */
+    saveDataToStorage(resData.token, resData.userId /* expirationDate */);
   };
 };
 
 export const logout = () => {
-  clearLogoutTimer();
+  //clearLogoutTimer();
   AsyncStorage.removeItem('userData');
   return {type: LOGOUT};
 };
 
-const clearLogoutTimer = () => {
+/* const clearLogoutTimer = () => {
   if (timer) {
     clearTimeout(timer);
   }
@@ -115,15 +115,15 @@ const setLogoutTimer = expirationTime => {
       dispatch(logout());
     }, expirationTime);
   };
-};
+}; */
 
-const saveDataToStorage = (token, userId, expirationDate) => {
+const saveDataToStorage = (token, userId /* expirationDate */) => {
   AsyncStorage.setItem(
     'userData',
     JSON.stringify({
       token: token,
       userId: userId,
-      expiryDate: expirationDate.toISOString(),
+      //expiryDate: expirationDate.toISOString(),
     }),
   );
 };

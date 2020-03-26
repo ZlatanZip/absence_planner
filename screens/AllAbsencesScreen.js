@@ -60,9 +60,8 @@ const AllAbsencesScreen = props => {
     setIsLoading(true);
     loadAbsences().then(() => {
       setIsLoading(false);
-      navigation.setParams({num: 5});
     });
-  }, [dispatch, navigation, loadAbsences]);
+  }, [dispatch, loadAbsences]);
 
   const selectItemHandler = (id, title) => {
     props.navigation.navigate('AbsenceDetails', {
