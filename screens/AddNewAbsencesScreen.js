@@ -57,26 +57,7 @@ const AddNewAbsencesScreen = props => {
     state => state.users.userInfo.remainingDaysAvaliable,
   );
   const userData = AsyncStorage.getItem('userData');
-  /*  const absenceExistCheck = useSelector(state =>
-    state.absences.allAbsences.filter(prod => prod.ownerId !== userData.userId),
-  );
-  console.log(absences[0].startDate);
-  
-  const absenceExistCheck = date => {
-    const dateCheck = useSelector(state =>
-      state.absences.allAbsences.some(absence => absence.startDate === date),
-    );
-  };
 
-  /*   const selectedMeal = availableMeals.find(meal => meal.id === mealId); */
-
-  //const array = [1, 2, 3, 4, 5];
-
-  // checks whether an element is even
-  //const even = element => element % 2 === 0;
-
-  //console.log(array.some(even)); */
-  // expected output: true
   const [formState, dispatchFormState] = useReducer(formReducer, {
     inputValues: {
       startDate: null,
@@ -94,7 +75,7 @@ const AddNewAbsencesScreen = props => {
     },
     formIsValid: false,
   });
-  console.log(formState.inputValidities);
+
   const onSelectDateHandler = useCallback(
     (inputIdentifier, inputValue, inputValidity) => {
       dispatchFormState({
@@ -106,18 +87,6 @@ const AddNewAbsencesScreen = props => {
     },
     [dispatchFormState],
   );
-
-  useEffect(() => {
-    console.log(formState.inputValues);
-  }, [formState.inputValues]);
-  console.log(formState.inputValues);
-  /*   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setDate(currentDate);
-    if (onSelect) {
-      onSelect(date);
-    }
-  }; */
 
   const inputChangeHandler = useCallback(
     (inputIdentifier, inputValue, inputValidity) => {
