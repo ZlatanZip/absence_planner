@@ -70,12 +70,12 @@ const AddNewAbsencesScreen = props => {
   });
 
   const submitHandler = useCallback(async () => {
-    if (!formState.formIsValid) {
+    /*  if (!formState.formIsValid) {
       Alert.alert('Wrong input!', 'Please check the errors in the form.', [
         {text: 'Okay'},
       ]);
       return;
-    }
+    } */
     setError(null);
 
     try {

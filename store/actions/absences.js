@@ -186,26 +186,46 @@ export const deleteAbsence = absenceId => {
   };
 };
 
-export const updateAbsence = (absenceId, startDate, endDate, Description) => {
-  return async (dispatch, getState) => {
+export const reviewAbsence = (absenceId, Status, reason) => {
+  return async () => {
     const userData = await AsyncStorage.getItem('userData');
     let data = JSON.parse(userData);
     const response = await fetch(
-      `http://192.168.1.3:3100/api/absences/${absenceId}`,
+      `http://192.168.1.3:3100/api/absences/review/${absenceId}`,
       {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: 'Bearer ' + data.token,
         },
         body: JSON.stringify({
-          startDate,
-          endDate,
-          Description,
+          Status,
+          reason,
         }),
       },
     );
+    console.log(response);
+    if (!response.ok) {
+      throw new Error('Something went wrong!');
+    }
+  };
+};
 
+export const softDeleteAbsence = absenceId => {
+  return async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    let data = JSON.parse(userData);
+    const response = await fetch(
+      `http://192.168.1.3:3100/api/absences/invalidate/${absenceId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + data.token,
+        },
+      },
+    );
+    console.log(response);
     if (!response.ok) {
       throw new Error('Something went wrong!');
     }

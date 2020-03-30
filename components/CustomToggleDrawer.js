@@ -99,7 +99,7 @@ const ToggleDrawer = props => {
           <HeaderText style={styles.listTitle}>{title}</HeaderText>
         </View>
         <View style={styles.listContainer}>
-          {role === 'Admina' ? children : <EmployeeDrawerItems {...props} />}
+          {role === 'Admin' ? children : <EmployeeDrawerItems {...props} />}
         </View>
 
         <RoundedButton

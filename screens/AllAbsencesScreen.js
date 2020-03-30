@@ -20,6 +20,7 @@ const AllAbsencesScreen = props => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [reason, setReason] = useState('');
   const [error, setError] = useState();
   const FlatListRef = useRef();
   const absences = useSelector(state => state.absences.allAbsences);
@@ -70,6 +71,27 @@ const AllAbsencesScreen = props => {
     });
   };
 
+  const submitAbsenceHandler = useCallback(
+    async (id, status, reason) => {
+      let action;
+      if (status) {
+        action = absencesActions.reviewAbsence(id, status, reason);
+      } else {
+        action = absencesActions.softDeleteAbsence(id);
+      }
+      try {
+        await dispatch(action);
+      } catch (err) {
+        setError(err.message);
+      }
+      navigation.navigate('Absence Overview', {
+        message: 'Absence successufully reviewed',
+      });
+      setIsLoading(false);
+    },
+    [dispatch, navigation],
+  );
+
   if (error) {
     return (
       <View style={styles.centered}>
@@ -114,7 +136,7 @@ const AllAbsencesScreen = props => {
           // on the other side My Absences screen displays actual user absences.
           // Buttons are as well displayed depending on who is the owner of the absence and role of user
           path === 'Absences Overview' &&
-          itemData.item.Status === props.navigation.state.routeName ? null : (
+          itemData.item.ownerId === _id ? null : (
             <AbsenceItem
               firstName={itemData.item.firstName}
               lastName={itemData.item.lastName}
@@ -129,27 +151,53 @@ const AllAbsencesScreen = props => {
               onSelect={() => {
                 //selectItemHandler(itemData.item.id, itemData.item.title);
               }}>
-              {role === 'Admin' && (
-                <View style={styles.buttonWrapper}>
-                  <RoundedButton
-                    style={styles.actions}
-                    title="Approve"
-                    onPress={() => {
-                      //  props.navigation.navigate('AbsenceDetails');
-                    }}
-                  />
+              <View style={styles.buttonWrapper}>
+                {role === 'Admin' && itemData.item.status === 'Pending' ? (
+                  <View style={styles.buttonWrapper}>
+                    <RoundedButton
+                      style={styles.actions}
+                      title="Approve"
+                      onPress={() => {
+                        submitAbsenceHandler(
+                          itemData.item.id,
+                          'Approved',
+                          reason,
+                        );
+                      }}
+                    />
+                    {path === 'Absences Overview' && (
+                      <RoundedButton
+                        color={Colors.grayish}
+                        style={styles.actions}
+                        title="Reject"
+                        onPress={() => {
+                          submitAbsenceHandler(
+                            itemData.item.id,
+                            'Rejected',
+                            reason,
+                          );
+                        }}
+                      />
+                    )}
+                  </View>
+                ) : null}
+                {role === 'Admin' && (
                   <RoundedButton
                     color={Colors.redish}
                     style={styles.actions}
-                    title="Reject"
+                    title={
+                      itemData.item.status !== 'Invalidated'
+                        ? 'Invalid'
+                        : 'Delete'
+                    }
                     onPress={() => {
-                      // dispatch(cartActions.addToCart(itemData.item));
+                      submitAbsenceHandler(itemData.item.id);
                     }}
                   />
-                </View>
-              )}
+                )}
+              </View>
               {/* Only the owner of the absence can edit the absence itself */}
-              {itemData.item.ownerId === _id && (
+              {itemData.item.ownerId !== _id ? null : (
                 <RoundedButton
                   color={Colors.grayish}
                   style={styles.actions}
