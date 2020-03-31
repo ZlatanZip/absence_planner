@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {
+  Alert,
   Text,
   View,
   Button,
@@ -10,16 +11,19 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 
 import AbsenceItem from '../components/AbsenceItem';
-import RoundedButton from '../components/RoundedButton';
+import RoleBasedButtons from '../components/RoleAndIdBasedButtons';
+import FlatListHeaderMessage from '../components/FlatlistHeaderMessage';
 import * as absencesActions from '../store/actions/absences';
 import Colors from '../constants/Colors';
 
 const AllAbsencesScreen = props => {
   const {navigation, key} = props;
   const path = navigation.state.routeName;
+  const flatListHeaderMessage = navigation.getParam('message');
 
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [reason, setReason] = useState('');
   const [error, setError] = useState();
   const FlatListRef = useRef();
@@ -38,6 +42,7 @@ const AllAbsencesScreen = props => {
     setError(null);
     setIsRefreshing(true);
     setIsLoading(true);
+
     try {
       await dispatch(action);
     } catch (err) {
@@ -64,6 +69,12 @@ const AllAbsencesScreen = props => {
     });
   }, [dispatch, loadAbsences]);
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Notification!', error, [{text: 'Okay'}]);
+    }
+  }, [error]);
+
   const selectItemHandler = (id, title) => {
     props.navigation.navigate('AbsenceDetails', {
       productId: id,
@@ -84,14 +95,11 @@ const AllAbsencesScreen = props => {
       } catch (err) {
         setError(err.message);
       }
-      navigation.navigate('Absence Overview', {
-        message: 'Absence successufully reviewed',
-      });
       setIsLoading(false);
     },
     [dispatch, navigation],
   );
-
+  console.log(flatListHeaderMessage);
   if (error) {
     return (
       <View style={styles.centered}>
@@ -126,6 +134,11 @@ const AllAbsencesScreen = props => {
   return (
     <View style={styles.centered}>
       <FlatList
+        ListHeaderComponent={
+          flatListHeaderMessage && (
+            <FlatListHeaderMessage message={flatListHeaderMessage} />
+          )
+        }
         onRefresh={loadAbsences}
         refreshing={isRefreshing}
         data={absences}
@@ -147,66 +160,18 @@ const AllAbsencesScreen = props => {
               type={itemData.item.type}
               description={
                 itemData.item.description ? itemData.item.description : null
-              }
-              onSelect={() => {
-                //selectItemHandler(itemData.item.id, itemData.item.title);
-              }}>
-              <View style={styles.buttonWrapper}>
-                {role === 'Admin' && itemData.item.status === 'Pending' ? (
-                  <View style={styles.buttonWrapper}>
-                    <RoundedButton
-                      style={styles.actions}
-                      title="Approve"
-                      onPress={() => {
-                        submitAbsenceHandler(
-                          itemData.item.id,
-                          'Approved',
-                          reason,
-                        );
-                      }}
-                    />
-                    {path === 'Absences Overview' && (
-                      <RoundedButton
-                        color={Colors.grayish}
-                        style={styles.actions}
-                        title="Reject"
-                        onPress={() => {
-                          submitAbsenceHandler(
-                            itemData.item.id,
-                            'Rejected',
-                            reason,
-                          );
-                        }}
-                      />
-                    )}
-                  </View>
-                ) : null}
-                {role === 'Admin' && (
-                  <RoundedButton
-                    color={Colors.redish}
-                    style={styles.actions}
-                    title={
-                      itemData.item.status !== 'Invalidated'
-                        ? 'Invalid'
-                        : 'Delete'
-                    }
-                    onPress={() => {
-                      submitAbsenceHandler(itemData.item.id);
-                    }}
-                  />
-                )}
-              </View>
+              }>
+              <RoleBasedButtons
+                path={path}
+                role={role}
+                status={itemData.item.status}
+                userId={_id}
+                ownerId={itemData.item.ownerId}
+                absenceId={itemData.item.id}
+                submitHandler={submitAbsenceHandler}
+                reason={reason}
+              />
               {/* Only the owner of the absence can edit the absence itself */}
-              {itemData.item.ownerId !== _id ? null : (
-                <RoundedButton
-                  color={Colors.grayish}
-                  style={styles.actions}
-                  title="Edit"
-                  onPress={() => {
-                    console.log(itemData.item);
-                  }}
-                />
-              )}
             </AbsenceItem>
           )
         }

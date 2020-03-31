@@ -9,7 +9,7 @@ import MyIcon from '../components/MyIcon';
 import TabIcon from '../components/TabIcon';
 import Colors from '../constants/Colors';
 
-export const stackNavigator = (screenName, screen, iconType) => {
+export const stackNavigator = (screenName, screen, iconType, array) => {
   const iconNames = routeName => {
     switch (routeName) {
       case 'Absences Overview':

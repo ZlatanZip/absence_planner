@@ -38,13 +38,15 @@ const formReducer = (state, action) => {
         inputValidities: updatedValidities,
         inputValues: updatedValues,
       };
-    /*  case FORM_RESET: {
+    case FORM_RESET: {
       console.log(state);
-      for (const key in state.inputValues) {
-        state.inputValues[key] = null;
+      for (const keys in state.inputValues) {
+        for (const key in state.initialValues) {
+          state.inputValues[keys] = state.initialValues[key];
+        }
       }
       return state;
-    } */
+    }
   }
   return state;
 };
@@ -59,6 +61,13 @@ const AddNewAbsencesScreen = props => {
   const userData = AsyncStorage.getItem('userData');
 
   const [formState, dispatchFormState] = useReducer(formReducer, {
+    initialValues: {
+      startDate: new Date(),
+      endDate: new Date(),
+      returnDate: new Date(),
+      type: 'Vacation',
+      Description: '',
+    },
     inputValues: {
       startDate: null,
       endDate: null,
@@ -136,7 +145,9 @@ const AddNewAbsencesScreen = props => {
           formState.inputValues.Description,
         ),
       );
-      navigation.goBack();
+      navigation.navigate('My Absences', {
+        message: 'Absence successufully reviewed',
+      });
     } catch (err) {
       setError(err.message);
     }
