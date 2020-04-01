@@ -1,6 +1,8 @@
 import User from '../../models/user';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import {URL, PORT} from 'react-native-dotenv';
+
 export const SET_USERS = 'SET_USERS';
 export const SET_ADMINS = 'SET_ADMINS';
 export const SET_LOGGED_IN_USER_INFO = 'SET_LOGGED_IN_USER_INFO';
@@ -10,7 +12,7 @@ export const fetchUsers = () => {
     try {
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
-      const response = await fetch('http://192.168.1.3:3100/api/users/', {
+      const response = await fetch(`${URL}${PORT}/api/users/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +57,7 @@ export const fetchUsers = () => {
 export const fetchLoggedInUserInfo = token => {
   return async dispatch => {
     try {
-      const response = await fetch('http://192.168.1.3:3100/api/users/me', {
+      const response = await fetch(`${URL}${PORT}/api/users/me`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +91,7 @@ export const addUser = (
     try {
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
-      const response = await fetch('http://192.168.1.3:3100/api/users', {
+      const response = await fetch(`${URL}${PORT}/api/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +130,7 @@ export const fetchAdmins = () => {
     try {
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
-      const response = await fetch('http://192.168.1.3:3100/api/users', {
+      const response = await fetch(`${URL}${PORT}/api/users`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +169,7 @@ export const resetPassword = (password, newPassword) => {
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
       const response = await fetch(
-        `http://192.168.1.3:3100/api/users/${data.userId}/changePassword`,
+        `${URL}${PORT}/api/users/${data.userId}/changePassword`,
         {
           method: 'POST',
           headers: {

@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
+import {ADMIN_PERMISSION} from 'react-native-dotenv';
 
 import RoundedButton from './RoundedButton';
 import Colors from '../constants/Colors';
@@ -17,11 +18,11 @@ const RoleAndIdBasedButtons = props => {
   } = props;
   return (
     <View style={styles.buttonWrapper}>
-      {role === 'Admin' && status === 'Pending' ? (
+      {role === ADMIN_PERMISSION && status === 'Pending' ? (
         <View style={styles.buttonWrapper}>
           <RoundedButton
             style={styles.actions}
-            title="Approve"
+            title="Approved"
             onPress={() => {
               submitHandler(absenceId, 'Approved', reason);
             }}
@@ -38,7 +39,7 @@ const RoleAndIdBasedButtons = props => {
           )}
         </View>
       ) : null}
-      {role === 'Admin' && (
+      {role === ADMIN_PERMISSION && (
         <RoundedButton
           color={Colors.redish}
           style={styles.actions}
@@ -54,7 +55,7 @@ const RoleAndIdBasedButtons = props => {
           style={styles.actions}
           title="Edit"
           onPress={() => {
-            console.log(itemData.item);
+            console.log('heloo');
           }}
         />
       )}

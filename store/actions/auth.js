@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import * as userActions from './users';
 
+import {URL, PORT} from 'react-native-dotenv';
+
 export const SIGNUP = 'SIGNUP';
 export const LOGIN = 'LOGIN';
 export const AUTHENTICATE = 'AUTHENTICATE';
@@ -18,7 +20,7 @@ export const authenticate = (userId, token, expiryTime) => {
 
 export const signup = (email, password) => {
   return async dispatch => {
-    const response = await fetch('http://192.168.1.3:3100/auth/signin', {
+    const response = await fetch(`${URL}${PORT}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,7 +60,7 @@ export const signup = (email, password) => {
 
 export const login = (email, password) => {
   return async dispatch => {
-    const response = await fetch('http://192.168.1.3:3100/auth/signin', {
+    const response = await fetch(`${URL}${PORT}/auth/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

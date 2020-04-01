@@ -1,6 +1,8 @@
 import Absence from '../../models/absence';
 import AsyncStorage from '@react-native-community/async-storage';
 
+import {URL, PORT} from 'react-native-dotenv';
+
 export const DELETE_ABSENCE = 'DELETE_ABSENCE';
 export const CREATE_ABSENCE = 'CREATE_ABSENCE';
 export const UPDATE_ABSENCE = 'UPDATE_ABSENCE';
@@ -13,23 +15,13 @@ export const fetchAllAbsences = () => {
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
 
-      const response = await fetch(
-        'http://192.168.1.3:3100/api/absences',
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + data.token,
-          },
-        } /*,
-      body: JSON.stringify({
-        title,
-        description,
-        imageUrl,
-        price
-      }) 
-    }*/,
-      );
+      const response = await fetch(`${URL}${PORT}/api/absences`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + data.token,
+        },
+      });
       const resData = await response.json();
       //console.log(resData);
       // before we unpack res. body we check the status
@@ -64,7 +56,7 @@ export const fetchAllAbsences = () => {
         ), */
       });
     } catch (error) {
-      //send it to your own analytic server
+      //SEND THE ERROR TO YOUR LOCAL SERVER
       throw error;
     }
   };
@@ -77,7 +69,7 @@ export const fetchMyAbsences = () => {
       let data = JSON.parse(userData);
 
       const response = await fetch(
-        `http://192.168.1.3:3100/api/absences/${data.userId}`,
+        `${URL}${PORT}/api/absences/${data.userId}`,
         {
           method: 'GET',
           headers: {
@@ -128,13 +120,13 @@ export const addNewAbsence = (
   type,
   Description,
 ) => {
-  return async (dispatch, getState) => {
+  return async () => {
     try {
       const Status = 'Pending';
       const userData = await AsyncStorage.getItem('userData');
       let data = JSON.parse(userData);
       const userId = data.userId;
-      const response = await fetch('http://192.168.1.3:3100/api/absences', {
+      const response = await fetch(`${URL}${PORT}/api/absences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,16 +159,13 @@ export const deleteAbsence = absenceId => {
     const userData = await AsyncStorage.getItem('userData');
     let data = JSON.parse(userData);
 
-    const response = await fetch(
-      `http://192.168.1.3:3100/api/absences/${absenceId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + data.token,
-        },
+    const response = await fetch(`${URL}${PORT}/api/absences/${absenceId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + data.token,
       },
-    );
+    });
 
     if (!response.ok) {
       throw new Error('Some deleting issues');
@@ -191,7 +180,7 @@ export const reviewAbsence = (absenceId, Status, reason) => {
     const userData = await AsyncStorage.getItem('userData');
     let data = JSON.parse(userData);
     const response = await fetch(
-      `http://192.168.1.3:3100/api/absences/review/${absenceId}`,
+      `${URL}${PORT}/api/absences/review/${absenceId}`,
       {
         method: 'PUT',
         headers: {
@@ -216,7 +205,7 @@ export const softDeleteAbsence = absenceId => {
     const userData = await AsyncStorage.getItem('userData');
     let data = JSON.parse(userData);
     const response = await fetch(
-      `http://192.168.1.3:3100/api/absences/invalidate/${absenceId}`,
+      `${URL}${PORT}/api/absences/invalidate/${absenceId}`,
       {
         method: 'DELETE',
         headers: {

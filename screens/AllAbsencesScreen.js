@@ -83,10 +83,10 @@ const AllAbsencesScreen = props => {
   };
 
   const submitAbsenceHandler = useCallback(
-    async (id, status, reason) => {
+    async (id, status, adminsReason) => {
       let action;
       if (status) {
-        action = absencesActions.reviewAbsence(id, status, reason);
+        action = absencesActions.reviewAbsence(id, status, adminsReason);
       } else {
         action = absencesActions.softDeleteAbsence(id);
       }
@@ -97,7 +97,7 @@ const AllAbsencesScreen = props => {
       }
       setIsLoading(false);
     },
-    [dispatch, navigation],
+    [dispatch],
   );
   console.log(flatListHeaderMessage);
   if (error) {
